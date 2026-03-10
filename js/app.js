@@ -392,8 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Navigation.init();
   Modal.init();
   Feed.renderFeed();
-  RightSidebar.renderTrends();
-  RightSidebar.renderSuggested();
+
   Explore.renderTrends();
   Activity.render();
   Communities.render();
