@@ -385,6 +385,30 @@ const Profile = (() => {
   return { render };
 })();
 
+// ---- FOLLOWING LIST (left sidebar bottom) ----
+const FollowingList = (() => {
+  const followed = [
+    { name: 'gam3r564231',   handle: 'gam3r564231',   initials: 'G',  color: '#f97316' },
+    { name: 'angel.caleb.gt', handle: 'angel.caleb.gt', initials: 'AC', color: '#8b5cf6' },
+    { name: 'scottystiles335', handle: 'scottystiles335', initials: 'SS', color: '#ef4444' },
+  ];
+  function render() {
+    const el = document.getElementById('following-list');
+    if (!el) return;
+    const items = followed.map(u => `
+      <div class="following-item" onclick="Toast.show('@${u.handle}')">
+        <div class="avatar avatar-sm" style="background:${u.color}22;color:${u.color};border:1px solid ${u.color}44;flex-shrink:0;">${u.initials}</div>
+        <div style="overflow:hidden;">
+          <div class="following-item__name">${u.name.length>16?u.name.slice(0,16)+'…':u.name}</div>
+          <div class="following-item__handle">@${u.handle.length>14?u.handle.slice(0,14)+'…':u.handle}</div>
+        </div>
+      </div>
+    `).join('');
+    el.innerHTML = `<div class="following-label">Siguiendo</div>${items}`;
+  }
+  return { render };
+})();
+
 // ==========================================
 // INIT
 // ==========================================
@@ -392,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Navigation.init();
   Modal.init();
   Feed.renderFeed();
+  FollowingList.render();
 
   Explore.renderTrends();
   Activity.render();

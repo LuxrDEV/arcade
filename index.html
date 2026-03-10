@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Arcade — Red social" />
   <title>Arcade</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,526 +15,506 @@
   <link rel="stylesheet" href="css/responsive.css" />
 
   <style>
-    /* ---- Splash ---- */
-    .splash {
-      position:fixed; inset:0; background:#000;
-      display:flex; align-items:center; justify-content:center;
-      z-index:9999;
-      animation:splashOut 0.4s ease 1.6s forwards;
+    /* ─── Splash ─── */
+    .splash{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:9999;animation:splashOut .4s ease 1.6s forwards;}
+    .splash__logo{animation:logoIn .5s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes logoIn{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+    @keyframes splashOut{to{opacity:0;pointer-events:none}}
+    .page.active{animation:pageIn .18s ease;}
+    @keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ─── 3-column layout ─── */
+    :root{
+      --left-w: 260px;
+      --right-w: 240px;
     }
-    .splash__logo { animation:logoIn 0.5s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes logoIn  { from{opacity:0;transform:scale(0.7)} to{opacity:1;transform:scale(1)} }
-    @keyframes splashOut { to{opacity:0;pointer-events:none} }
-
-    .page.active { animation:pageIn 0.18s ease; }
-    @keyframes pageIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-
-    /* ---- Logo wordmark ---- */
-    .logo-wordmark { display:flex;flex-direction:column;line-height:1; }
-    .logo-wordmark__main { font-family:var(--font-display);font-size:22px;letter-spacing:4px;color:#fff; }
-    .logo-wordmark__sub  { font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--accent-orange); }
-
-    /* ---- Mobile topbar ---- */
-    .topbar-mobile {
-      display:none; position:fixed; top:0; left:0; right:0;
-      height:var(--topbar-height);
-      background:rgba(0,0,0,0.92); backdrop-filter:blur(16px);
-      border-bottom:1px solid var(--border); z-index:150;
-      align-items:center; justify-content:space-between; padding:0 16px;
-    }
-    @media(max-width:640px){
-      .topbar-mobile{display:flex;}
-      .main-content{padding-top:var(--topbar-height);}
+    .app-shell{
+      display:flex;min-height:100vh;
     }
 
-    /* ---- Drawer ---- */
-    .drawer-overlay {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,0.75); z-index:180;
+    /* ─── LEFT SIDEBAR ─── */
+    .sidebar-left{
+      width:var(--left-w);position:fixed;top:0;left:0;bottom:0;
+      background:var(--bg-secondary);border-right:1px solid var(--border);
+      display:flex;flex-direction:column;z-index:100;overflow:hidden;
     }
-    .drawer-overlay.open{display:block;}
-    .drawer {
-      position:fixed; left:0; top:0; bottom:0; width:285px;
-      background:var(--bg-secondary); border-right:1px solid var(--border);
-      z-index:190; transform:translateX(-100%);
-      transition:transform 0.28s cubic-bezier(.4,0,.2,1);
-      display:flex; flex-direction:column; overflow-y:auto;
+    .sidebar-left__logo{
+      display:flex;align-items:center;gap:11px;
+      padding:20px 18px 16px;border-bottom:1px solid var(--border);
     }
-    .drawer.open{transform:translateX(0);}
-    .drawer-head {
-      display:flex; align-items:center; gap:12px;
-      padding:20px 20px 16px; border-bottom:1px solid var(--border);
-    }
-    .drawer-user {
-      display:flex; align-items:flex-start; gap:12px;
-      padding:16px 20px; border-bottom:1px solid var(--border);
-      cursor:pointer; transition:background var(--transition);
-    }
-    .drawer-user:hover{background:var(--bg-hover);}
-    .drawer-user__name  { font-size:15px;font-weight:700; }
-    .drawer-user__handle{ font-size:13px;color:var(--text-secondary); }
-    .drawer-user__stats { display:flex;gap:16px;margin-top:6px; }
-    .drawer-user__stat  { font-size:13px;color:var(--text-secondary); }
-    .drawer-user__stat strong{ color:var(--text-primary); }
-    .drawer-config {
-      display:flex; align-items:center; gap:12px;
-      padding:14px 20px; color:var(--text-secondary);
-      cursor:pointer; transition:background var(--transition),color var(--transition);
-      border-radius:var(--radius-md); margin:4px 12px;
-    }
-    .drawer-config:hover{background:var(--bg-hover);color:var(--text-primary);}
-    .drawer-config svg{width:20px;height:20px;flex-shrink:0;}
-    .drawer-config span{font-size:15px;font-weight:500;}
+    .sidebar-left__logo img{width:34px;height:34px;object-fit:contain;flex-shrink:0;}
+    .logo-name{font-family:var(--font-display);font-size:22px;letter-spacing:4px;color:#fff;}
+    .logo-badge{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--accent-orange);background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);padding:2px 6px;border-radius:4px;}
 
-    /* ---- Shorts / Interno ---- */
-    .shorts-feed {
-      height:calc(100vh - 120px);
-      overflow-y:scroll; scroll-snap-type:y mandatory;
-      -webkit-overflow-scrolling:touch;
+    /* nav */
+    .sidebar-left__nav{flex:1;padding:10px 10px 0;display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+    .nav-item{display:flex;align-items:center;gap:13px;padding:11px 12px;border-radius:var(--radius-md);cursor:pointer;color:var(--text-secondary);transition:background var(--transition),color var(--transition);white-space:nowrap;}
+    .nav-item:hover{background:var(--bg-hover);color:var(--text-primary);}
+    .nav-item.active{background:rgba(59,130,246,.1);color:var(--accent-blue);}
+    .nav-item svg{width:20px;height:20px;flex-shrink:0;}
+    .nav-item__label{font-size:15px;font-weight:500;}
+    .nav-badge{margin-left:auto;background:var(--accent-orange);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;}
+    .nav-divider{height:1px;background:var(--border);margin:6px 10px;}
+    .nav-section{font-size:10px;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;padding:6px 12px 2px;}
+
+    /* following list at bottom of left */
+    .sidebar-left__following{
+      border-top:1px solid var(--border);padding:12px 10px 10px;
     }
-    @media(max-width:640px){
-      .shorts-feed{height:calc(100vh - var(--topbar-height) - var(--bottomnav-height));}
+    .following-label{font-size:10px;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;padding:0 4px 8px;}
+    .following-item{
+      display:flex;align-items:center;gap:10px;padding:8px 8px;
+      border-radius:var(--radius-md);cursor:pointer;
+      transition:background var(--transition);
     }
-    .short-item {
-      height:calc(100vh - 120px);
-      scroll-snap-align:start; position:relative;
-      background:#000; display:flex; align-items:center;
-      justify-content:center; overflow:hidden;
-      border-bottom:2px solid var(--border);
+    .following-item:hover{background:var(--bg-hover);}
+    .following-item__name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .following-item__handle{font-size:11px;color:var(--text-muted);}
+
+    /* ─── CENTER ─── */
+    .center-area{
+      margin-left:var(--left-w);margin-right:var(--right-w);
+      flex:1;min-height:100vh;
+      border-right:1px solid var(--border);
     }
-    @media(max-width:640px){
-      .short-item{height:calc(100vh - var(--topbar-height) - var(--bottomnav-height));}
+
+    /* ─── RIGHT PANEL ─── */
+    .sidebar-right{
+      width:var(--right-w);position:fixed;top:0;right:0;bottom:0;
+      background:var(--bg-secondary);border-left:1px solid var(--border);
+      display:flex;flex-direction:column;z-index:100;
     }
-    .short-item__bg {
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
+
+    /* Avatar trigger at top of right panel */
+    .right-panel__avatar-btn{
+      display:flex;flex-direction:column;align-items:center;
+      padding:24px 16px 16px;gap:10px;cursor:pointer;
+      border-bottom:1px solid var(--border);
+      transition:background var(--transition);
     }
-    .short-item__play {
-      width:64px; height:64px; border-radius:50%;
-      background:rgba(0,0,0,0.55); backdrop-filter:blur(6px);
-      display:flex; align-items:center; justify-content:center;
-      cursor:pointer; transition:transform 0.15s;
-      border:2px solid rgba(255,255,255,0.2); z-index:2;
+    .right-panel__avatar-btn:hover{background:var(--bg-hover);}
+    .right-panel__avatar{
+      width:64px;height:64px;border-radius:50%;
+      background:#1e3a5f;color:#3b82f6;
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;font-weight:800;
+      border:2px solid rgba(59,130,246,.4);
+      transition:border-color .2s,box-shadow .2s;
     }
+    .right-panel__avatar-btn:hover .right-panel__avatar{
+      border-color:var(--accent-blue);
+      box-shadow:0 0 16px rgba(59,130,246,.25);
+    }
+    .right-panel__name{font-size:14px;font-weight:700;text-align:center;}
+    .right-panel__handle{font-size:12px;color:var(--text-secondary);text-align:center;}
+    .right-panel__chevron{color:var(--text-muted);transition:transform .25s;}
+    .right-panel__chevron.open{transform:rotate(180deg);}
+
+    /* Collapsed/expanded menu inside right panel */
+    .right-panel__menu{
+      overflow:hidden;max-height:0;
+      transition:max-height .3s cubic-bezier(.4,0,.2,1);
+    }
+    .right-panel__menu.open{max-height:400px;}
+    .right-menu-item{
+      display:flex;align-items:center;gap:13px;
+      padding:14px 20px;cursor:pointer;color:var(--text-secondary);
+      transition:background var(--transition),color var(--transition);
+      border-bottom:1px solid var(--border);
+    }
+    .right-menu-item:hover{background:var(--bg-hover);color:var(--text-primary);}
+    .right-menu-item svg{width:19px;height:19px;flex-shrink:0;}
+    .right-menu-item span{font-size:15px;font-weight:500;}
+
+    /* ─── page header ─── */
+    .page-header{
+      position:sticky;top:0;z-index:50;
+      background:rgba(0,0,0,.88);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border);
+      padding:15px 20px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .page-header__title{font-size:20px;font-weight:700;}
+    .tab-btn{padding:8px 18px;font-size:14px;font-weight:500;color:var(--text-secondary);border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;}
+    .tab-btn.active{color:#fff;border-bottom-color:var(--accent-blue);}
+
+    /* ─── Shorts ─── */
+    .shorts-feed{height:calc(100vh - 61px);overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;}
+    .short-item{height:calc(100vh - 61px);scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:2px solid var(--border);}
+    .short-item__bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+    .short-item__play{width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s;border:2px solid rgba(255,255,255,.2);z-index:2;}
     .short-item__play:hover{transform:scale(1.08);}
-    .short-item__overlay {
-      position:absolute; bottom:0; left:0; right:0;
-      background:linear-gradient(transparent,rgba(0,0,0,0.88));
-      padding:28px 60px 16px 16px; z-index:3;
-    }
+    .short-item__overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.88));padding:28px 60px 16px 16px;z-index:3;}
     .short-item__user{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-    .short-item__caption{font-size:14px;line-height:1.5;color:rgba(255,255,255,0.92);margin-bottom:8px;}
+    .short-item__caption{font-size:14px;line-height:1.5;color:rgba(255,255,255,.92);margin-bottom:8px;}
     .short-item__caption .tag{color:var(--accent-blue);}
-    .short-item__actions {
-      position:absolute; right:12px; bottom:80px;
-      display:flex; flex-direction:column; gap:18px;
-      align-items:center; z-index:4;
-    }
+    .short-item__actions{position:absolute;right:12px;bottom:80px;display:flex;flex-direction:column;gap:18px;align-items:center;z-index:4;}
     .short-action{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#fff;}
-    .short-action__icon {
-      width:44px; height:44px; border-radius:50%;
-      background:rgba(255,255,255,0.14); backdrop-filter:blur(4px);
-      display:flex; align-items:center; justify-content:center; transition:background 0.15s;
-    }
-    .short-action__icon:hover{background:rgba(255,255,255,0.24);}
+    .short-action__icon{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.14);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;transition:background .15s;}
+    .short-action__icon:hover{background:rgba(255,255,255,.24);}
     .short-action svg{width:20px;height:20px;}
     .short-action span{font-size:12px;font-weight:600;}
-    .short-item__progress{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.15);z-index:5;}
+    .short-item__progress{position:absolute;bottom:0;left:0;right:0;height:2px;background:rgba(255,255,255,.15);z-index:5;}
     .short-item__progress-bar{height:100%;background:var(--accent-blue);}
 
-    /* Profile banner */
-    .profile-banner-simple {
-      height:140px;
-      background:linear-gradient(135deg,#060612 0%,#0d1a3a 40%,#091428 100%);
-      position:relative; overflow:hidden;
-    }
-    .profile-banner-simple::after{
-      content:''; position:absolute; inset:0;
-      background:radial-gradient(circle at 30% 60%,rgba(59,130,246,0.2) 0%,transparent 60%);
-    }
-
-    /* Profile grid (Interno) */
-    .profile-short-thumb {
-      aspect-ratio:9/16; background:var(--bg-card);
-      position:relative; overflow:hidden; cursor:pointer;
-    }
+    /* ─── Profile page (solo contenido) ─── */
+    .profile-short-thumb{aspect-ratio:9/16;background:var(--bg-card);position:relative;overflow:hidden;cursor:pointer;}
     .profile-short-thumb:hover .pst-overlay{opacity:1;}
     .pst-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-    .pst-overlay{
-      position:absolute;inset:0;background:rgba(0,0,0,0.4);
-      display:flex;align-items:center;justify-content:center;
-      opacity:0;transition:opacity 0.2s;
-    }
-    .pst-views{
-      position:absolute;bottom:4px;left:6px;
-      font-size:11px;color:#fff;font-weight:600;
-      display:flex;align-items:center;gap:3px;
-    }
+    .pst-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;}
+    .pst-views{position:absolute;bottom:4px;left:6px;font-size:11px;color:#fff;font-weight:600;display:flex;align-items:center;gap:3px;}
 
-    /* Avatar colors */
+    /* Avatar color helpers */
     .av-blue  {background:#1e3a5f!important;color:#3b82f6!important;}
     .av-purple{background:#2d1b69!important;color:#8b5cf6!important;}
     .av-orange{background:#431407!important;color:#f97316!important;}
     .av-red   {background:#450a0a!important;color:#ef4444!important;}
     .av-green {background:#052e16!important;color:#22c55e!important;}
+
+    /* ─── Mobile topbar & drawer ─── */
+    .topbar-mobile{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:150;align-items:center;justify-content:space-between;padding:0 14px;}
+    @media(max-width:768px){
+      .topbar-mobile{display:flex;}
+      .sidebar-left,.sidebar-right{display:none;}
+      .center-area{margin:0;padding-top:56px;padding-bottom:64px;}
+    }
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:180;}
+    .drawer-overlay.open{display:block;}
+    .drawer{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--bg-secondary);border-right:1px solid var(--border);z-index:190;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow-y:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-head{display:flex;align-items:center;gap:12px;padding:18px 18px 14px;border-bottom:1px solid var(--border);}
+    .drawer-user-mini{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--transition);}
+    .drawer-user-mini:hover{background:var(--bg-hover);}
+    .drawer-config{display:flex;align-items:center;gap:12px;padding:13px 18px;color:var(--text-secondary);cursor:pointer;transition:background var(--transition),color var(--transition);border-radius:var(--radius-md);margin:2px 10px;}
+    .drawer-config:hover{background:var(--bg-hover);color:var(--text-primary);}
+    .drawer-config svg{width:19px;height:19px;flex-shrink:0;}
+    .drawer-config span{font-size:14px;font-weight:500;}
+
+    /* ─── Bottom nav mobile ─── */
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:64px;background:rgba(0,0,0,.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);z-index:200;align-items:center;justify-content:space-around;padding:0 8px;}
+    @media(max-width:768px){.bottom-nav{display:flex;}}
+    .bnav-item{display:flex;flex-direction:column;align-items:center;padding:8px 12px;color:var(--text-secondary);cursor:pointer;transition:color .2s;position:relative;border-radius:var(--radius-md);}
+    .bnav-item.active{color:var(--accent-blue);}
+    .bnav-item svg{width:22px;height:22px;}
+    .bnav-dot{width:4px;height:4px;border-radius:50%;background:var(--accent-blue);position:absolute;bottom:2px;}
+    .bnav-plus{width:46px;height:46px;border-radius:50%;background:var(--accent-blue);display:flex;align-items:center;justify-content:center;box-shadow:0 0 18px rgba(59,130,246,.4);}
+
+    /* ─── Misc ─── */
+    .logo-wordmark{display:flex;flex-direction:column;line-height:1;}
+    .logo-wordmark__main{font-family:var(--font-display);font-size:21px;letter-spacing:4px;color:#fff;}
+    .logo-wordmark__sub{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--accent-orange);}
+
+    @keyframes progress{to{width:100%}}
   </style>
 </head>
-
 <body>
 
-<!-- ======== SPLASH ======== -->
+<!-- SPLASH -->
 <div class="splash">
   <div class="splash__logo">
     <img src="Logo.png" alt="Arcade" style="width:80px;height:80px;object-fit:contain;filter:brightness(1.15);" />
   </div>
 </div>
 
-<!-- ======== MOBILE TOPBAR ======== -->
+<!-- MOBILE TOPBAR -->
 <header class="topbar-mobile">
   <button style="padding:8px;color:#fff;" onclick="openDrawer()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" stroke-linecap="round">
-      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <div style="display:flex;align-items:center;gap:9px;">
+  <div style="display:flex;align-items:center;gap:8px;">
     <img src="Logo.png" alt="Arcade" style="width:28px;height:28px;object-fit:contain;" />
     <div class="logo-wordmark"><span class="logo-wordmark__main">ARCADE</span></div>
   </div>
   <button onclick="Modal.open('create-post')" style="padding:8px;color:var(--accent-blue);">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22" stroke-linecap="round">
-      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 </header>
 
-<!-- ======== DRAWER ======== -->
+<!-- MOBILE DRAWER -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <nav class="drawer" id="mobile-drawer">
-
   <div class="drawer-head">
-    <img src="Logo.png" alt="Arcade" style="width:36px;height:36px;object-fit:contain;" />
-    <div class="logo-wordmark">
-      <span class="logo-wordmark__main">ARCADE</span>
-      <span class="logo-wordmark__sub">RED SOCIAL · BETA</span>
-    </div>
+    <img src="Logo.png" alt="Arcade" style="width:34px;height:34px;object-fit:contain;" />
+    <div class="logo-wordmark"><span class="logo-wordmark__main">ARCADE</span><span class="logo-wordmark__sub">BETA</span></div>
     <button onclick="closeDrawer()" style="margin-left:auto;padding:6px;color:var(--text-secondary);">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" stroke-linecap="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="17" height="17" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
-
-  <!-- Mini perfil en drawer -->
-  <div class="drawer-user" onclick="Navigation.navigate('profile');closeDrawer();">
-    <div class="avatar avatar-lg av-blue" style="flex-shrink:0;">AH</div>
+  <div class="drawer-user-mini" onclick="Navigation.navigate('profile');closeDrawer();">
+    <div class="avatar av-blue" style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0;">AH</div>
     <div>
-      <div class="drawer-user__name">Alexis Hernandez</div>
-      <div class="drawer-user__handle">@alexis</div>
-      <div class="drawer-user__stats">
-        <span class="drawer-user__stat"><strong>1</strong> Siguiendo</span>
-        <span class="drawer-user__stat"><strong>3</strong> Seguidores</span>
+      <div style="font-size:14px;font-weight:700;">Alexis Hernandez</div>
+      <div style="font-size:12px;color:var(--text-secondary);">@alexis</div>
+      <div style="display:flex;gap:14px;margin-top:5px;">
+        <span style="font-size:12px;color:var(--text-secondary);"><strong style="color:#fff;">1</strong> Siguiendo</span>
+        <span style="font-size:12px;color:var(--text-secondary);"><strong style="color:#fff;">3</strong> Seguidores</span>
       </div>
     </div>
   </div>
-
-  <!-- Nav items -->
-  <ul class="sidebar__nav" style="padding:8px 0;flex:1;">
-    <li class="nav-item active" data-page="feed" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
-      <span class="nav-label">Inicio</span>
-    </li>
-    <li class="nav-item" data-page="communities" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-      <span class="nav-label">Epicentro</span>
-    </li>
-    <li class="nav-item" data-page="explore" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-      <span class="nav-label">Explorar</span>
-    </li>
-    <li class="nav-item" data-page="activity" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-      <span class="nav-label">Actividad</span>
-      <span class="nav-badge">8</span>
-    </li>
-    <li class="nav-item" data-page="messages" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-      <span class="nav-label">InTax</span>
-    </li>
-    <li class="nav-item" data-page="profile" onclick="closeDrawer()">
-      <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-      <span class="nav-label">Mi Perfil</span>
-    </li>
+  <ul style="padding:8px 0;flex:1;">
+    <li class="nav-item active" data-page="feed" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="nav-item__label">Inicio</span></li>
+    <li class="nav-item" data-page="communities" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nav-item__label">Epicentro</span></li>
+    <li class="nav-item" data-page="explore" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="nav-item__label">Explorar</span></li>
+    <li class="nav-item" data-page="activity" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="nav-item__label">Actividad</span><span class="nav-badge">8</span></li>
+    <li class="nav-item" data-page="messages" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav-item__label">InTax</span></li>
+    <li class="nav-item" data-page="profile" onclick="closeDrawer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nav-item__label">Mi Perfil</span></li>
   </ul>
-
-  <!-- Botón configuración en la parte baja del drawer -->
-  <div style="border-top:1px solid var(--border);padding:8px 0;">
+  <div style="border-top:1px solid var(--border);padding:6px 0;">
     <div class="drawer-config" onclick="Toast.show('Configuración próximamente');closeDrawer();">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       <span>Configuración</span>
     </div>
   </div>
-
 </nav>
 
-<!-- ======== APP ======== -->
-<div class="app-wrapper">
+<!-- ═══════════════════════════════════════ -->
+<!--         APP SHELL (3 columns)          -->
+<!-- ═══════════════════════════════════════ -->
+<div class="app-shell">
 
-  <!-- ===== SIDEBAR desktop ===== -->
-  <aside class="sidebar">
-    <div class="sidebar__logo">
-      <img src="Logo.png" alt="Arcade" style="width:36px;height:36px;object-fit:contain;" class="sidebar__logo-img" />
-      <span class="sidebar__logo-text">ARCADE</span>
-      <span class="sidebar__logo-badge">BETA</span>
+  <!-- ══════ LEFT SIDEBAR ══════ -->
+  <aside class="sidebar-left">
+    <div class="sidebar-left__logo">
+      <img src="Logo.png" alt="Arcade" />
+      <span class="logo-name">ARCADE</span>
+      <span class="logo-badge">BETA</span>
     </div>
 
-    <ul class="sidebar__nav">
+    <nav class="sidebar-left__nav">
       <li class="nav-item active" data-page="feed">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
-        <span class="nav-label">Inicio</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="nav-item__label">Inicio</span>
       </li>
       <li class="nav-item" data-page="communities">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-        <span class="nav-label">Epicentro</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-item__label">Epicentro</span>
       </li>
       <li class="nav-item" data-page="explore">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        <span class="nav-label">Explorar</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="nav-item__label">Explorar</span>
       </li>
       <li class="nav-item" data-page="activity">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-        <span class="nav-label">Actividad</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="nav-item__label">Actividad</span>
         <span class="nav-badge">8</span>
       </li>
       <li class="nav-item" data-page="messages">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
-        <span class="nav-label">InTax</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span class="nav-item__label">InTax</span>
       </li>
       <div class="nav-divider"></div>
-      <div class="nav-section-label">CUENTA</div>
-      <li class="nav-item" data-page="profile">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-        <span class="nav-label">Mi Perfil</span>
+      <div class="nav-section">PUBLICAR</div>
+      <li class="nav-item" id="btn-create-nav" style="background:rgba(59,130,246,.1);color:var(--accent-blue);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="20" height="20"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span class="nav-item__label">Nueva publicación</span>
       </li>
-      <li class="nav-item btn-create-post" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);margin-top:8px;">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
-        <span class="nav-label">Publicar</span>
-      </li>
-    </ul>
+    </nav>
 
-    <div class="sidebar__footer">
-      <div class="nav-item" onclick="Toast.show('Configuración próximamente')" style="color:var(--text-secondary);margin-bottom:4px;">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
-        <span class="nav-label">Configuración</span>
-      </div>
-      <div class="sidebar__user" id="sidebar-user" onclick="Navigation.navigate('profile')">
-        <div class="sidebar__user-avatar av-blue">AH</div>
-        <div class="sidebar__user-info">
-          <div class="sidebar__user-name">Alexis Hernandez</div>
-          <div class="sidebar__user-handle">@alexis</div>
-        </div>
-      </div>
+    <!-- Cuentas que sigue (abajo izquierdo) -->
+    <div class="sidebar-left__following" id="following-list">
+      <div class="following-label">Siguiendo</div>
+      <!-- rendered by JS -->
     </div>
   </aside>
 
-  <!-- ===== MAIN ===== -->
-  <main class="main-content">
-    <div class="center-feed">
+  <!-- ══════ CENTER ══════ -->
+  <main class="center-area">
 
-      <!-- ─── FEED ─── -->
-      <section class="page active" id="page-feed">
-        <div class="page-header">
-          <span class="page-header__title">Para ti</span>
-          <div class="page-header__tabs">
-            <button class="tab-btn active" id="tab-externo" onclick="switchFeedTab('externo')">Externo</button>
-            <button class="tab-btn" id="tab-interno" onclick="switchFeedTab('interno')">Interno</button>
-          </div>
+    <!-- ── FEED ── -->
+    <section class="page active" id="page-feed">
+      <div class="page-header">
+        <span class="page-header__title">Para ti</span>
+        <div style="display:flex;">
+          <button class="tab-btn active" id="tab-externo" onclick="switchFeedTab('externo')">Externo</button>
+          <button class="tab-btn" id="tab-interno" onclick="switchFeedTab('interno')">Interno</button>
         </div>
+      </div>
 
-        <!-- EXTERNO: posts normales -->
-        <div id="panel-externo">
-          <div class="create-post">
-            <div class="avatar avatar-md av-blue">AH</div>
-            <div class="create-post__input-area">
-              <textarea class="create-post__input" placeholder="¿Qué está pasando?" rows="2" onclick="Modal.open('create-post')"></textarea>
-              <div class="create-post__toolbar">
-                <div class="create-post__tools">
-                  <button class="create-post__tool" onclick="Modal.open('create-post')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Video
-                  </button>
-                  <button class="create-post__tool" onclick="Modal.open('create-post')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Imagen
-                  </button>
-                  <button class="create-post__tool" onclick="Modal.open('create-post')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Encuesta
-                  </button>
-                </div>
-                <button class="btn btn-primary btn-sm btn-create-post">Publicar</button>
+      <!-- EXTERNO: posts -->
+      <div id="panel-externo">
+        <div class="create-post">
+          <div class="avatar avatar-md av-blue">AH</div>
+          <div class="create-post__input-area">
+            <textarea class="create-post__input" placeholder="¿Qué está pasando?" rows="2" onclick="Modal.open('create-post')"></textarea>
+            <div class="create-post__toolbar">
+              <div class="create-post__tools">
+                <button class="create-post__tool" onclick="Modal.open('create-post')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Video
+                </button>
+                <button class="create-post__tool" onclick="Modal.open('create-post')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> Imagen
+                </button>
+                <button class="create-post__tool" onclick="Modal.open('create-post')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="15" height="15"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> Encuesta
+                </button>
               </div>
+              <button class="btn btn-primary btn-sm" id="btn-create-inline">Publicar</button>
             </div>
           </div>
-          <div id="feed-posts"></div>
         </div>
+        <div id="feed-posts"></div>
+      </div>
 
-        <!-- INTERNO: shorts verticales tipo YouTube Shorts -->
-        <div id="panel-interno" style="display:none;">
-          <div class="shorts-feed" id="shorts-feed"></div>
+      <!-- INTERNO: shorts -->
+      <div id="panel-interno" style="display:none;">
+        <div class="shorts-feed" id="shorts-feed"></div>
+      </div>
+    </section>
+
+    <!-- ── COMMUNITIES ── -->
+    <section class="page" id="page-communities">
+      <div class="page-header">
+        <span class="page-header__title">Epicentro</span>
+        <button class="btn btn-outline btn-sm" onclick="Toast.show('Crear comunidad próximamente')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nueva
+        </button>
+      </div>
+      <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;padding:14px 20px 4px;">MIS COMUNIDADES</div>
+      <div class="community-grid" id="communities-grid"></div>
+      <div style="font-size:10px;font-family:var(--font-mono);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;padding:14px 20px 4px;">EXPLORAR</div>
+      <div id="explore-communities-list"></div>
+    </section>
+
+    <!-- ── EXPLORE ── -->
+    <section class="page" id="page-explore">
+      <div class="page-header">
+        <div class="search-bar" style="flex:1;">
+          <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" placeholder="Buscar..." />
         </div>
-      </section>
+      </div>
+      <div class="explore-filters">
+        <button class="explore-filter active">Para ti</button>
+        <button class="explore-filter">Posts</button>
+        <button class="explore-filter">Usuarios</button>
+        <button class="explore-filter">Comunidades</button>
+      </div>
+      <div class="trend-card" style="margin:16px;border-radius:var(--radius-lg);">
+        <div class="trend-card__header">🔥 Tendencias</div>
+        <div id="explore-trends"></div>
+      </div>
+    </section>
 
-      <!-- ─── COMMUNITIES ─── -->
-      <section class="page" id="page-communities">
-        <div class="page-header">
-          <span class="page-header__title">Epicentro</span>
-          <button class="btn btn-outline btn-sm" onclick="Toast.show('Crear comunidad próximamente')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Nueva
-          </button>
+    <!-- ── ACTIVITY ── -->
+    <section class="page" id="page-activity">
+      <div class="page-header">
+        <span class="page-header__title">Actividad</span>
+        <button style="padding:8px;color:var(--text-secondary);" onclick="Toast.show('Mensajes directos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div id="activity-list"></div>
+    </section>
+
+    <!-- ── MESSAGES ── -->
+    <section class="page" id="page-messages">
+      <div class="page-header" style="justify-content:space-between;">
+        <span style="font-size:20px;font-weight:700;">InTax</span>
+        <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:2px;">INTERACCION TAXONOMICA</span>
+        <button style="padding:8px;color:var(--text-secondary);" onclick="Toast.show('Nuevo mensaje')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </button>
+      </div>
+      <div class="messages-tabs">
+        <div class="messages-tab active" onclick="switchMsgTab(this,'chats')">Chats</div>
+        <div class="messages-tab" onclick="switchMsgTab(this,'groups')">Grupos</div>
+      </div>
+      <div id="chats-panel">
+        <div style="padding:60px 20px;text-align:center;color:var(--text-muted);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="margin:0 auto 12px;opacity:.25;" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <p style="font-size:14px;">No hay conversaciones aún</p>
         </div>
-        <div class="section-header" style="padding:16px 20px 4px;">MIS COMUNIDADES</div>
-        <div class="community-grid" id="communities-grid"></div>
-        <div class="section-header" style="padding:16px 20px 4px;">EXPLORAR</div>
-        <div id="explore-communities-list"></div>
-      </section>
+      </div>
+      <div id="groups-panel" style="display:none;"><div id="groups-list"></div></div>
+    </section>
 
-      <!-- ─── EXPLORE ─── -->
-      <section class="page" id="page-explore">
-        <div class="page-header">
-          <div class="search-bar" style="flex:1;">
-            <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" placeholder="Buscar..." />
-          </div>
-        </div>
-        <div class="explore-filters">
-          <button class="explore-filter active">Para ti</button>
-          <button class="explore-filter">Posts</button>
-          <button class="explore-filter">Usuarios</button>
-          <button class="explore-filter">Comunidades</button>
-        </div>
-        <div class="trend-card" style="margin:16px;border-radius:var(--radius-lg);">
-          <div class="trend-card__header">🔥 Tendencias</div>
-          <div id="explore-trends"></div>
-        </div>
-      </section>
+    <!-- ── PROFILE (solo tabs + contenido) ── -->
+    <section class="page" id="page-profile">
+      <div class="page-header">
+        <button style="padding:8px;color:var(--text-secondary);" onclick="Navigation.navigate('feed')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        </button>
+        <span class="page-header__title">Alexis Hernandez</span>
+        <div style="width:36px;"></div>
+      </div>
 
-      <!-- ─── ACTIVITY ─── -->
-      <section class="page" id="page-activity">
-        <div class="page-header">
-          <span class="page-header__title">Actividad</span>
-          <button class="btn-ghost" onclick="Toast.show('Mensajes directos')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
-        <div id="activity-list"></div>
-      </section>
+      <!-- tabs -->
+      <div style="display:flex;border-bottom:1px solid var(--border);">
+        <button class="tab-btn active" style="flex:1;text-align:center;" id="ptab-externo" onclick="switchProfileTab('externo')">Externo</button>
+        <button class="tab-btn" style="flex:1;text-align:center;" id="ptab-interno" onclick="switchProfileTab('interno')">Interno</button>
+      </div>
+      <div id="profile-externo"><div id="profile-posts-list"></div></div>
+      <div id="profile-interno" style="display:none;">
+        <div id="profile-shorts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;"></div>
+      </div>
+    </section>
 
-      <!-- ─── MESSAGES ─── -->
-      <section class="page" id="page-messages">
-        <div class="messages-header">
-          <span>InTax</span>
-          <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:2px;">INTERACCION TAXONOMICA</span>
-          <button class="btn-ghost" onclick="Toast.show('Nuevo mensaje')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </button>
-        </div>
-        <div class="messages-tabs">
-          <div class="messages-tab active" onclick="switchMsgTab(this,'chats')">Chats</div>
-          <div class="messages-tab" onclick="switchMsgTab(this,'groups')">Grupos</div>
-        </div>
-        <div id="chats-panel">
-          <div style="padding:60px 20px;text-align:center;color:var(--text-muted);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="margin:0 auto 12px;opacity:.25;" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <p style="font-size:14px;">No hay conversaciones aún</p>
-          </div>
-        </div>
-        <div id="groups-panel" style="display:none;"><div id="groups-list"></div></div>
-      </section>
+  </main><!-- /center-area -->
 
-      <!-- ─── PROFILE ─── -->
-      <section class="page" id="page-profile">
-        <div class="page-header">
-          <button class="btn-ghost" onclick="Navigation.navigate('feed')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          </button>
-          <div>
-            <div style="font-size:18px;font-weight:700;">Alexis Hernandez</div>
-            <div style="font-size:12px;color:var(--text-muted);" id="profile-posts-count">4 posts</div>
-          </div>
-          <button class="btn-ghost" onclick="Toast.show('Ajustes de cuenta')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          </button>
-        </div>
+  <!-- ══════ RIGHT SIDEBAR ══════ -->
+  <aside class="sidebar-right">
 
-        <div class="profile-banner-simple"></div>
-
-        <div class="profile-info">
-          <div class="profile-avatar-wrap">
-            <div class="profile-avatar av-blue">AH</div>
-            <button class="btn btn-outline btn-sm" onclick="Toast.show('Editar perfil')">Editar perfil</button>
-          </div>
-          <div class="profile-name">Alexis Hernandez</div>
-          <div class="profile-handle" style="margin-bottom:10px;">
-            <span style="color:var(--text-secondary);">@alexis</span>
-          </div>
-          <div style="font-size:13px;color:var(--text-secondary);display:flex;align-items:center;gap:6px;margin-bottom:14px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Se unió en 2026
-          </div>
-          <div class="profile-stats">
-            <div class="profile-stat"><span class="profile-stat__count">1</span><span class="profile-stat__label">Siguiendo</span></div>
-            <div class="profile-stat"><span class="profile-stat__count">3</span><span class="profile-stat__label">Seguidores</span></div>
-            <div class="profile-stat"><span class="profile-stat__count">0</span><span class="profile-stat__label">Me gusta</span></div>
-          </div>
-        </div>
-
-        <!-- Tabs: Externo / Interno -->
-        <div style="display:flex;border-bottom:1px solid var(--border);">
-          <button class="tab-btn active" style="flex:1;text-align:center;" id="ptab-externo" onclick="switchProfileTab('externo')">Externo</button>
-          <button class="tab-btn" style="flex:1;text-align:center;" id="ptab-interno" onclick="switchProfileTab('interno')">Interno</button>
-        </div>
-        <div id="profile-externo"><div id="profile-posts-list"></div></div>
-        <div id="profile-interno" style="display:none;">
-          <div id="profile-shorts-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;"></div>
-        </div>
-      </section>
-
-    </div><!-- /center-feed -->
-
-
-
-  </main>
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <div class="bottom-nav__item active" data-page="feed">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <div class="bottom-nav__dot"></div>
+    <!-- Avatar button (toggle panel) -->
+    <div class="right-panel__avatar-btn" onclick="toggleRightPanel()" id="right-avatar-btn">
+      <div class="right-panel__avatar">AH</div>
+      <div>
+        <div class="right-panel__name">Alexis Hernandez</div>
+        <div class="right-panel__handle">@alexis</div>
+      </div>
+      <svg class="right-panel__chevron" id="right-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
     </div>
-    <div class="bottom-nav__item" data-page="communities">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    </div>
-    <div class="bottom-nav__plus btn-create-post">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </div>
-    <div class="bottom-nav__item" data-page="activity">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    </div>
-    <div class="bottom-nav__item" data-page="explore">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </div>
-  </nav>
 
-</div>
+    <!-- Expandable menu -->
+    <div class="right-panel__menu" id="right-panel-menu">
+      <div class="right-menu-item" onclick="Navigation.navigate('profile');closeRightPanel();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Mi Perfil</span>
+      </div>
+      <div class="right-menu-item" onclick="Toast.show('Configuración próximamente');closeRightPanel();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Configuración</span>
+      </div>
+    </div>
+
+    <!-- Stats below -->
+    <div style="padding:16px;border-bottom:1px solid var(--border);">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;">
+        <div>
+          <div style="font-size:18px;font-weight:800;">1</div>
+          <div style="font-size:11px;color:var(--text-muted);">Siguiendo</div>
+        </div>
+        <div>
+          <div style="font-size:18px;font-weight:800;">3</div>
+          <div style="font-size:11px;color:var(--text-muted);">Seguidores</div>
+        </div>
+        <div>
+          <div style="font-size:18px;font-weight:800;">4</div>
+          <div style="font-size:11px;color:var(--text-muted);">Posts</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:10px;font-size:10px;color:var(--text-muted);font-family:var(--font-mono);line-height:1.9;text-align:center;margin-top:auto;">
+      © 2026 Arcade · Beta
+    </div>
+  </aside>
+
+</div><!-- /app-shell -->
+
+<!-- BOTTOM NAV mobile -->
+<nav class="bottom-nav">
+  <div class="bnav-item active" data-page="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><div class="bnav-dot"></div></div>
+  <div class="bnav-item" data-page="communities"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+  <div class="bnav-plus" onclick="Modal.open('create-post')"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+  <div class="bnav-item" data-page="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+  <div class="bnav-item" data-page="explore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+</nav>
 
 <!-- MODAL CREATE POST -->
 <div class="modal-overlay" id="modal-create-post">
   <div class="modal">
     <div class="modal__header">
-      <button class="modal__close" data-close-modal="create-post">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      <button class="modal__close" data-close-modal="create-post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       <span class="modal__title">Nueva publicación</span>
       <button class="btn btn-primary btn-sm" id="submit-post">Publicar</button>
     </div>
@@ -545,8 +524,7 @@
         <div style="flex:1;">
           <div style="margin-bottom:12px;">
             <button class="btn btn-outline btn-sm" onclick="Toast.show('Selecciona dónde publicar')">
-              Selecciona dónde publicar
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+              Selecciona dónde publicar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
             </button>
           </div>
           <textarea id="new-post-text" style="width:100%;color:#fff;font-size:16px;resize:none;min-height:80px;max-height:260px;line-height:1.6;overflow-y:auto;" placeholder="¿Qué está pasando?" maxlength="280"></textarea>
@@ -572,49 +550,78 @@
 <script src="js/app.js"></script>
 
 <script>
-function openDrawer(){
-  document.getElementById('mobile-drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+/* ─ Drawer ─ */
+function openDrawer(){document.getElementById('mobile-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){document.getElementById('mobile-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
+
+/* ─ Right panel toggle ─ */
+function toggleRightPanel(){
+  const menu=document.getElementById('right-panel-menu');
+  const chev=document.getElementById('right-chevron');
+  const open=menu.classList.toggle('open');
+  chev.classList.toggle('open',open);
 }
-function closeDrawer(){
-  document.getElementById('mobile-drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow='';
+function closeRightPanel(){
+  document.getElementById('right-panel-menu').classList.remove('open');
+  document.getElementById('right-chevron').classList.remove('open');
 }
+
+/* ─ Feed tabs ─ */
 function switchFeedTab(tab){
-  document.getElementById('panel-externo').style.display = tab==='externo'?'block':'none';
-  document.getElementById('panel-interno').style.display  = tab==='interno'?'block':'none';
-  document.getElementById('tab-externo').classList.toggle('active', tab==='externo');
-  document.getElementById('tab-interno').classList.toggle('active', tab==='interno');
+  document.getElementById('panel-externo').style.display=tab==='externo'?'block':'none';
+  document.getElementById('panel-interno').style.display=tab==='interno'?'block':'none';
+  document.getElementById('tab-externo').classList.toggle('active',tab==='externo');
+  document.getElementById('tab-interno').classList.toggle('active',tab==='interno');
   if(tab==='interno') Shorts.render();
 }
+
+/* ─ Profile tabs ─ */
 function switchProfileTab(tab){
-  document.getElementById('profile-externo').style.display = tab==='externo'?'block':'none';
-  document.getElementById('profile-interno').style.display  = tab==='interno'?'block':'none';
-  document.getElementById('ptab-externo').classList.toggle('active', tab==='externo');
-  document.getElementById('ptab-interno').classList.toggle('active', tab==='interno');
+  document.getElementById('profile-externo').style.display=tab==='externo'?'block':'none';
+  document.getElementById('profile-interno').style.display=tab==='interno'?'block':'none';
+  document.getElementById('ptab-externo').classList.toggle('active',tab==='externo');
+  document.getElementById('ptab-interno').classList.toggle('active',tab==='interno');
   if(tab==='interno') Shorts.renderProfileGrid();
 }
+
+/* ─ Messages tabs ─ */
 function switchMsgTab(btn,tab){
   document.querySelectorAll('.messages-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('chats-panel').style.display  = tab==='chats'?'block':'none';
-  document.getElementById('groups-panel').style.display = tab==='groups'?'block':'none';
+  document.getElementById('chats-panel').style.display=tab==='chats'?'block':'none';
+  document.getElementById('groups-panel').style.display=tab==='groups'?'block':'none';
 }
+
+/* ─ Shorts like ─ */
+function likeShort(id,btn){
+  const icon=btn.querySelector('.short-action__icon svg');
+  const count=document.getElementById('sl-'+id);
+  const liked=btn.dataset.liked==='1';
+  btn.dataset.liked=liked?'0':'1';
+  icon.setAttribute('fill',liked?'none':'red');
+  icon.setAttribute('stroke',liked?'white':'red');
+  if(count)count.textContent=parseInt(count.textContent)+(liked?-1:1);
+}
+
+/* ─ Init extras ─ */
 document.addEventListener('DOMContentLoaded',()=>{
+  /* Explore filters */
   document.querySelectorAll('.explore-filter').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.explore-filter').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
+  /* Char counter */
   const ta=document.getElementById('new-post-text');
   const cc=document.getElementById('char-counter');
-  if(ta&&cc) ta.addEventListener('input',()=>{
-    const l=ta.value.length;
-    cc.textContent=`${l}/280`;
-    cc.style.color=l>250?'var(--accent-red)':'var(--text-muted)';
+  if(ta&&cc)ta.addEventListener('input',()=>{const l=ta.value.length;cc.textContent=`${l}/280`;cc.style.color=l>250?'var(--accent-red)':'var(--text-muted)';});
+  /* Inline create button */
+  document.getElementById('btn-create-nav')?.addEventListener('click',()=>Modal.open('create-post'));
+  document.getElementById('btn-create-inline')?.addEventListener('click',()=>Modal.open('create-post'));
+  /* Bottom nav */
+  document.querySelectorAll('[data-page]').forEach(el=>{
+    el.addEventListener('click',()=>Navigation.navigate(el.dataset.page));
   });
 });
 </script>
