@@ -85,46 +85,28 @@
       display:flex;flex-direction:column;z-index:100;
     }
 
-    /* Avatar trigger at top of right panel */
-    .right-panel__avatar-btn{
-      display:flex;flex-direction:column;align-items:center;
-      padding:24px 16px 16px;gap:10px;cursor:pointer;
-      border-bottom:1px solid var(--border);
-      transition:background var(--transition);
-    }
-    .right-panel__avatar-btn:hover{background:var(--bg-hover);}
-    .right-panel__avatar{
-      width:64px;height:64px;border-radius:50%;
-      background:#1e3a5f;color:#3b82f6;
-      display:flex;align-items:center;justify-content:center;
-      font-size:22px;font-weight:800;
-      border:2px solid rgba(59,130,246,.4);
-      transition:border-color .2s,box-shadow .2s;
-    }
-    .right-panel__avatar-btn:hover .right-panel__avatar{
-      border-color:var(--accent-blue);
-      box-shadow:0 0 16px rgba(59,130,246,.25);
-    }
-    .right-panel__name{font-size:14px;font-weight:700;text-align:center;}
-    .right-panel__handle{font-size:12px;color:var(--text-secondary);text-align:center;}
-    .right-panel__chevron{color:var(--text-muted);transition:transform .25s;}
-    .right-panel__chevron.open{transform:rotate(180deg);}
+    /* ─── Right sidebar redesign ─── */
+    .right-top-bar{display:flex;align-items:center;gap:8px;padding:18px 16px 14px;}
+    .right-top-bar__line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,.35),transparent);}
+    .right-top-bar__dot{width:6px;height:6px;border-radius:50%;background:var(--accent-blue);box-shadow:0 0 8px rgba(59,130,246,.7);flex-shrink:0;}
 
-    /* Collapsed/expanded menu inside right panel */
-    .right-panel__menu{
-      overflow:hidden;max-height:0;
-      transition:max-height .3s cubic-bezier(.4,0,.2,1);
-    }
-    .right-panel__menu.open{max-height:400px;}
-    .right-menu-item{
-      display:flex;align-items:center;gap:13px;
-      padding:14px 20px;cursor:pointer;color:var(--text-secondary);
-      transition:background var(--transition),color var(--transition);
-      border-bottom:1px solid var(--border);
-    }
-    .right-menu-item:hover{background:var(--bg-hover);color:var(--text-primary);}
-    .right-menu-item svg{width:19px;height:19px;flex-shrink:0;}
-    .right-menu-item span{font-size:15px;font-weight:500;}
+    .right-avatar-zone{display:flex;justify-content:center;padding:6px 16px 20px;cursor:pointer;transition:opacity .2s;}
+    .right-avatar-zone:hover{opacity:.8;}
+    .right-avatar-ring{position:relative;width:64px;height:64px;border-radius:50%;padding:2px;background:conic-gradient(#3b82f6,#8b5cf6,#f97316,#3b82f6);animation:spinRing 6s linear infinite;}
+    @keyframes spinRing{to{transform:rotate(360deg);}}
+    .right-avatar-inner{width:100%;height:100%;border-radius:50%;background:#1e3a5f;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;border:2px solid var(--bg-secondary);animation:spinRingR 6s linear infinite;}
+    @keyframes spinRingR{to{transform:rotate(-360deg);}}
+    .right-avatar-status{position:absolute;width:12px;height:12px;border-radius:50%;background:#22c55e;border:2px solid var(--bg-secondary);bottom:2px;right:2px;}
+
+    .right-nav{display:flex;flex-direction:column;padding:10px 10px;gap:3px;}
+    .right-nav-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:var(--radius-md);cursor:pointer;color:var(--text-secondary);transition:background .18s,color .18s,transform .15s;position:relative;overflow:hidden;}
+    .right-nav-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,rgba(59,130,246,.12),transparent);transition:width .2s;}
+    .right-nav-item:hover{color:var(--text-primary);transform:translateX(3px);}
+    .right-nav-item:hover::before{width:100%;}
+    .right-nav-item__icon{width:34px;height:34px;border-radius:8px;background:var(--bg-hover);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .18s,box-shadow .18s;}
+    .right-nav-item:hover .right-nav-item__icon{background:rgba(59,130,246,.14);box-shadow:0 0 10px rgba(59,130,246,.18);}
+    .right-nav-item__icon svg{width:16px;height:16px;}
+    .right-nav-item__label{font-size:14px;font-weight:500;}
 
     /* ─── page header ─── */
     .page-header{
@@ -454,31 +436,45 @@
   <!-- ══════ RIGHT SIDEBAR ══════ -->
   <aside class="sidebar-right">
 
-    <!-- Avatar button (toggle panel) -->
-    <div class="right-panel__avatar-btn" onclick="toggleRightPanel()" id="right-avatar-btn">
-      <div class="right-panel__avatar">AH</div>
-      <div>
-        <div class="right-panel__name">Alexis Hernandez</div>
-        <div class="right-panel__handle">@alexis</div>
-      </div>
-      <svg class="right-panel__chevron" id="right-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="16" height="16"><path d="M6 9l6 6 6-6"/></svg>
+    <!-- Top bar decorativa -->
+    <div class="right-top-bar">
+      <div class="right-top-bar__line"></div>
+      <div class="right-top-bar__dot"></div>
+      <div class="right-top-bar__line"></div>
     </div>
 
-    <!-- Expandable menu -->
-    <div class="right-panel__menu" id="right-panel-menu">
-      <div class="right-menu-item" onclick="Navigation.navigate('profile');closeRightPanel();">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Mi Perfil</span>
+    <!-- Solo avatar/logo, sin nombre -->
+    <div class="right-avatar-zone" onclick="Navigation.navigate('profile')">
+      <div class="right-avatar-ring">
+        <div class="right-avatar-inner">AH</div>
       </div>
-      <div class="right-menu-item" onclick="Toast.show('Suscripciones próximamente');closeRightPanel();">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-        <span>Suscripciones</span>
-      </div>
-      <div class="right-menu-item" onclick="Toast.show('Configuración próximamente');closeRightPanel();">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Configuración</span>
-      </div>
+      <div class="right-avatar-status"></div>
     </div>
+
+    <!-- Divisor -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,var(--border-light),transparent);margin:0 16px;"></div>
+
+    <!-- Menu siempre visible -->
+    <nav class="right-nav">
+      <div class="right-nav-item" onclick="Navigation.navigate('profile')">
+        <div class="right-nav-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <span class="right-nav-item__label">Mi Perfil</span>
+      </div>
+      <div class="right-nav-item" onclick="Toast.show('Suscripciones próximamente')">
+        <div class="right-nav-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        </div>
+        <span class="right-nav-item__label">Suscripciones</span>
+      </div>
+      <div class="right-nav-item" onclick="Toast.show('Configuración próximamente')">
+        <div class="right-nav-item__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <span class="right-nav-item__label">Configuración</span>
+      </div>
+    </nav>
   </aside>
 
 </div><!-- /app-shell -->
@@ -535,18 +531,6 @@
 /* ─ Drawer ─ */
 function openDrawer(){document.getElementById('mobile-drawer').classList.add('open');document.getElementById('drawer-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeDrawer(){document.getElementById('mobile-drawer').classList.remove('open');document.getElementById('drawer-overlay').classList.remove('open');document.body.style.overflow='';}
-
-/* ─ Right panel toggle ─ */
-function toggleRightPanel(){
-  const menu=document.getElementById('right-panel-menu');
-  const chev=document.getElementById('right-chevron');
-  const open=menu.classList.toggle('open');
-  chev.classList.toggle('open',open);
-}
-function closeRightPanel(){
-  document.getElementById('right-panel-menu').classList.remove('open');
-  document.getElementById('right-chevron').classList.remove('open');
-}
 
 /* ─ Feed tabs ─ */
 function switchFeedTab(tab){
